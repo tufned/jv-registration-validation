@@ -2,13 +2,51 @@ package core.basesyntax.service;
 
 import core.basesyntax.dao.StorageDao;
 import core.basesyntax.dao.StorageDaoImpl;
+import core.basesyntax.db.Storage;
+import core.basesyntax.exceptions.InvalidUserException;
 import core.basesyntax.model.User;
 
 public class RegistrationServiceImpl implements RegistrationService {
     private final StorageDao storageDao = new StorageDaoImpl();
 
     @Override
-    public User register(User user) {
-        return null;
+    public User register(User user) throws InvalidUserException {
+        if (user == null) {
+            throw new InvalidUserException("User must not be null");
+        }
+        checkUserExists(user);
+        checkLogin(user.getLogin());
+        checkPassword(user.getPassword());
+        checkAge(user.getAge());
+
+        return storageDao.add(user);
+    }
+
+    private void checkUserExists(User user) {
+        if (Storage.people.isEmpty()) {
+            return;
+        }
+        User existedUser = storageDao.get(user.getLogin());
+        if (existedUser != null) {
+            throw new InvalidUserException("User already exists");
+        }
+    }
+
+    private void checkLogin(String login) {
+        if (login == null || login.length() < 6) {
+            throw new InvalidUserException("Login must contain at least 6 characters");
+        }
+    }
+
+    private void checkPassword(String password) {
+        if (password == null || password.length() < 6) {
+            throw new InvalidUserException("Password must contain at least 6 characters");
+        }
+    }
+
+    private void checkAge(Integer age) {
+        if (age == null || age < 18) {
+            throw new InvalidUserException("User must be at least 18 years old");
+        }
     }
 }
