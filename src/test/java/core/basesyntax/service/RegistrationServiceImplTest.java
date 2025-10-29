@@ -1,14 +1,16 @@
 package core.basesyntax.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import core.basesyntax.db.Storage;
 import core.basesyntax.exceptions.InvalidUserException;
 import core.basesyntax.model.User;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import java.util.List;
-import static org.junit.jupiter.api.Assertions.*;
 
 class RegistrationServiceImplTest {
     private static RegistrationServiceImpl registrationService;
@@ -56,14 +58,12 @@ class RegistrationServiceImplTest {
     @Test
     void register_userAlreadyExists_notOk() {
         registrationService.register(user);
-        assertThrows(InvalidUserException.class, () -> {
-            User newUser = new User();
-            user.setId(888L);
-            user.setPassword("newpassword");
-            user.setPassword("login1");
-            user.setAge(18);
-            registrationService.register(newUser);
-        });
+        User newUser = new User();
+        user.setId(888L);
+        user.setPassword("newpassword");
+        user.setPassword("login1");
+        user.setAge(18);
+        assertThrows(InvalidUserException.class, () -> registrationService.register(newUser));
     }
 
     @Test
