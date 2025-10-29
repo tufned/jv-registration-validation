@@ -13,6 +13,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class RegistrationServiceImplTest {
+    private static final int HIGHER_AGE = 20;
+    private static final int MIN_AGE = 18;
+    private static final int INVALID_AGE = 17;
+    private static final int INVALID_MINUS_AGE = -17;
     private static RegistrationServiceImpl registrationService;
     private static List<User> people;
     private User user;
@@ -29,7 +33,7 @@ class RegistrationServiceImplTest {
         user.setId(1234L);
         user.setLogin("login1");
         user.setPassword("password");
-        user.setAge(18);
+        user.setAge(MIN_AGE);
     }
 
     @Test
@@ -38,18 +42,22 @@ class RegistrationServiceImplTest {
     }
 
     @Test
-    void register_userValid_ok() {
+    void register_firstUserValid_ok() {
         User actualUser = registrationService.register(user);
         assertEquals(1, people.size());
         assertEquals(people.get(0), user);
         assertEquals(user, actualUser);
+    }
 
+    @Test
+    void register_secondUserValid_ok() {
+        Storage.people.add(user);
         User newUser = new User();
         newUser.setId(888L);
         newUser.setLogin("login2");
         newUser.setPassword("newpassword");
-        newUser.setAge(20);
-        actualUser = registrationService.register(newUser);
+        newUser.setAge(HIGHER_AGE);
+        User actualUser = registrationService.register(newUser);
         assertEquals(2, people.size());
         assertEquals(people.get(1), newUser);
         assertEquals(newUser, actualUser);
@@ -61,8 +69,8 @@ class RegistrationServiceImplTest {
         User newUser = new User();
         user.setId(888L);
         user.setPassword("newpassword");
-        user.setPassword("login1");
-        user.setAge(18);
+        user.setLogin("login1");
+        user.setAge(MIN_AGE);
         assertThrows(InvalidUserException.class, () -> registrationService.register(newUser));
     }
 
@@ -91,9 +99,9 @@ class RegistrationServiceImplTest {
 
     @Test
     void register_checkAge_notOk() {
-        user.setAge(17);
+        user.setAge(INVALID_AGE);
         assertThrows(InvalidUserException.class, () -> registrationService.register(user));
-        user.setAge(-17);
+        user.setAge(INVALID_MINUS_AGE);
         assertThrows(InvalidUserException.class, () -> registrationService.register(user));
         user.setAge(null);
         assertThrows(InvalidUserException.class, () -> registrationService.register(user));
