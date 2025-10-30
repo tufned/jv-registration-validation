@@ -36,20 +36,29 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     private void checkLogin(String login) {
-        if (login == null || login.length() < MIN_LOGIN_LENGTH) {
+        if (login == null) {
+            throw new InvalidUserException("Login can't be null");
+        }
+        if (login.length() < MIN_LOGIN_LENGTH) {
             throw new InvalidUserException("Login must contain at least 6 characters");
         }
     }
 
     private void checkPassword(String password) {
-        if (password == null || password.length() < MIN_PASSWORD_LENGTH) {
+        if (password == null) {
+            throw new InvalidUserException("Password can't be null");
+        }
+        if (password.length() < MIN_PASSWORD_LENGTH) {
             throw new InvalidUserException("Password must contain at least 6 characters");
         }
     }
 
     private void checkAge(Integer age) {
-        if (age == null || age < MIN_AGE) {
-            throw new InvalidUserException("User must be at least 18 years old");
+        if (age == null) {
+            throw new InvalidUserException("Age can't be null");
+        }
+        if (age < MIN_AGE) {
+            throw new InvalidUserException("User must be at least " + MIN_AGE + " years old");
         }
     }
 }
