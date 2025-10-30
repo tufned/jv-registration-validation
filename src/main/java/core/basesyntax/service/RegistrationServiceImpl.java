@@ -7,6 +7,9 @@ import core.basesyntax.exceptions.InvalidUserException;
 import core.basesyntax.model.User;
 
 public class RegistrationServiceImpl implements RegistrationService {
+    private static final int MIN_AGE = 18;
+    private static final int MIN_LOGIN_LENGTH = 6;
+    private static final int MIN_PASSWORD_LENGTH = 6;
     private final StorageDao storageDao = new StorageDaoImpl();
 
     @Override
@@ -33,19 +36,19 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     private void checkLogin(String login) {
-        if (login == null || login.length() < 6) {
+        if (login == null || login.length() < MIN_LOGIN_LENGTH) {
             throw new InvalidUserException("Login must contain at least 6 characters");
         }
     }
 
     private void checkPassword(String password) {
-        if (password == null || password.length() < 6) {
+        if (password == null || password.length() < MIN_PASSWORD_LENGTH) {
             throw new InvalidUserException("Password must contain at least 6 characters");
         }
     }
 
     private void checkAge(Integer age) {
-        if (age == null || age < 18) {
+        if (age == null || age < MIN_AGE) {
             throw new InvalidUserException("User must be at least 18 years old");
         }
     }

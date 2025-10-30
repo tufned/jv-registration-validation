@@ -65,7 +65,7 @@ class RegistrationServiceImplTest {
 
     @Test
     void register_userAlreadyExists_notOk() {
-        registrationService.register(user);
+        Storage.people.add(user);
         User newUser = new User();
         user.setId(888L);
         user.setPassword("newpassword");
@@ -75,15 +75,25 @@ class RegistrationServiceImplTest {
     }
 
     @Test
-    void register_checkLogin_notOk() {
+    void register_loginIsTooShort_notOk() {
         user.setLogin("login");
         assertThrows(InvalidUserException.class, () -> registrationService.register(user));
+
+        user.setLogin("");
+        assertThrows(InvalidUserException.class, () -> registrationService.register(user));
+
+        user.setLogin("abc");
+        assertThrows(InvalidUserException.class, () -> registrationService.register(user));
+    }
+
+    @Test
+    void register_loginIsNull_notOk() {
         user.setLogin(null);
         assertThrows(InvalidUserException.class, () -> registrationService.register(user));
     }
 
     @Test
-    void register_checkPassword_notOk() {
+    void register_passwordIsTooShort_notOk() {
         user.setPassword("passw");
         assertThrows(InvalidUserException.class, () -> registrationService.register(user));
 
@@ -92,17 +102,24 @@ class RegistrationServiceImplTest {
 
         user.setPassword("abc");
         assertThrows(InvalidUserException.class, () -> registrationService.register(user));
+    }
 
+    @Test
+    void register_passwordIsNull_notOk() {
         user.setPassword(null);
         assertThrows(InvalidUserException.class, () -> registrationService.register(user));
     }
 
     @Test
-    void register_checkAge_notOk() {
+    void register_ageIsTooSmall_notOk() {
         user.setAge(INVALID_AGE);
         assertThrows(InvalidUserException.class, () -> registrationService.register(user));
         user.setAge(INVALID_MINUS_AGE);
         assertThrows(InvalidUserException.class, () -> registrationService.register(user));
+    }
+
+    @Test
+    void register_ageIsNull_notOk() {
         user.setAge(null);
         assertThrows(InvalidUserException.class, () -> registrationService.register(user));
     }
