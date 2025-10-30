@@ -17,10 +17,10 @@ public class RegistrationServiceImpl implements RegistrationService {
         if (user == null) {
             throw new InvalidUserException("User must not be null");
         }
-        checkUserExists(user);
         checkLogin(user.getLogin());
         checkPassword(user.getPassword());
         checkAge(user.getAge());
+        checkUserExists(user);
 
         return storageDao.add(user);
     }

@@ -67,10 +67,10 @@ class RegistrationServiceImplTest {
     void register_userAlreadyExists_notOk() {
         Storage.people.add(user);
         User newUser = new User();
-        user.setId(888L);
-        user.setPassword("newpassword");
-        user.setLogin("login1");
-        user.setAge(MIN_AGE);
+        newUser.setId(888L);
+        newUser.setPassword("newpassword");
+        newUser.setLogin(user.getLogin());
+        newUser.setAge(MIN_AGE);
         assertThrows(InvalidUserException.class, () -> registrationService.register(newUser));
     }
 
